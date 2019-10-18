@@ -1,4 +1,5 @@
 
+#include <SPI.h>
 #include <EEPROM.h>
 #include <RHRouter.h>
 #include <RHMesh.h>
@@ -35,9 +36,15 @@ void setup() {
   pinMode(LED, OUTPUT);
   pinMode(RFM95_RST, OUTPUT);
   digitalWrite(RFM95_RST, HIGH);
-  while (!Serial) ; // Wait for serial port to be available
-  Serial.begin(115200);
+ // while (!Serial) ; // Wait for serial port to be available
+  Serial.begin(9600);
   delay(100);
+
+  // manual reset
+  digitalWrite(RFM95_RST, LOW);
+  delay(10);
+  digitalWrite(RFM95_RST, HIGH);
+  delay(10);
 
   nodeId = EEPROM.read(0);
   if (nodeId > 10) {
