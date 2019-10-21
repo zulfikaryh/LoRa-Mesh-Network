@@ -7,7 +7,7 @@
 
 #define RH_HAVE_SERIAL
 #define LED 9
-#define N_NODES 2
+#define N_NODES 4
 #define RFM95_CS 10
 #define RFM95_RST 7
 #define RFM95_INT 2
