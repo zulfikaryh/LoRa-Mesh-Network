@@ -1,10 +1,26 @@
+/* LoRa Mesh Network for Arduino and RFM95W LoRa Radio Transceiver
+ * This Source Code is for Node in LoRa Mesh Network
+ * Source code is developed using the RadioHead library because it includes an 
+ * implementation of mesh networking. For details on how the mesh works, see the 
+ * RadioHead documentation about it.
+ * 
+ * Each node has an identity which is stored in the device EEPROM.
+ * 
+ * Each node attempts to communicate with every other node in the network, and in 
+ * the process it keeps track of a routing table that describes which nodes it can 
+ * talk to directly and which nodes that messages get routed through when there is 
+ * no direct connection available. It also keeps track of the signal strength that 
+ * it “hears” from a node when it communicates with it directly
+*/
 
+// Libraries
 #include <SPI.h>
 #include <EEPROM.h>
 #include <RHRouter.h>
 #include <RHMesh.h>
 #include <RH_RF95.h>
 
+//Constants
 #define RH_HAVE_SERIAL
 #define LED 9
 #define N_NODES 4
@@ -12,6 +28,7 @@
 #define RFM95_RST 7
 #define RFM95_INT 2
 
+//Variables
 uint8_t nodeId;
 uint8_t routes[N_NODES]; // full routing table for mesh
 int16_t rssi[N_NODES]; // signal strength info
@@ -46,6 +63,7 @@ void setup() {
   digitalWrite(RFM95_RST, HIGH);
   delay(10);
 
+  //Initialize the Node Number
   nodeId = EEPROM.read(0);
   if (nodeId > 10) {
     Serial.print(F("EEPROM nodeId invalid: "));
@@ -62,6 +80,8 @@ void setup() {
     Serial.print("done node ");
     Serial.println(nodeId);
   }
+
+  //Set transmitter power and frequency
   rf95.setTxPower(23, false);
   rf95.setFrequency(915.0);
   rf95.setCADTimeout(500);
@@ -128,7 +148,7 @@ void updateRoutingTable() {
   }
 }
 
-// Create a JSON string with the routing info to each node
+// Create a routing info to each node
 void getRouteInfoString(char *p, size_t len) {
   p[0] = '\0';
   strcat(p, "[");
